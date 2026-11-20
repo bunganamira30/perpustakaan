@@ -3,6 +3,7 @@
 use App\Http\Controllers\Admin\AdminBookController;
 use App\Http\Controllers\Auth\AuthController;
 use App\Http\Controllers\BookController;
+use App\Http\Controllers\BorrowingController;
 use Illuminate\Support\Facades\Route;
 
 // Beranda: Arahkan ke katalog buku
@@ -26,10 +27,10 @@ Route::middleware('guest')->group(function () {
 Route::middleware('auth')->group(function () {
     Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
-    // Placeholder rute anggota (akan diimplementasikan penuh pada TKT-008 & TKT-009)
-    Route::get('/my-borrowings', function () {
-        return redirect()->route('books.index');
-    })->name('my-borrowings');
+    // Sirkulasi Peminjaman & Pengembalian Buku (TKT-008-WEB)
+    Route::get('/my-borrowings', [BorrowingController::class, 'myBorrowings'])->name('my-borrowings');
+    Route::post('/books/{id}/borrow', [BorrowingController::class, 'borrow'])->name('books.borrow');
+    Route::post('/borrowings/{id}/return', [BorrowingController::class, 'returnBook'])->name('borrowings.return');
 });
 
 // Panel Manajemen Khusus Administrator (Role Admin Only)

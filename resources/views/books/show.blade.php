@@ -45,21 +45,47 @@
         </div>
 
         <!-- Tombol Aksi Sirkulasi -->
-        <div class="flex items-center gap-3">
+        <div class="flex flex-wrap items-center gap-3">
             @auth
-                @if(!$book->is_archived && $book->stock > 0 && !auth()->user()->isAdmin())
-                    <form method="POST" action="{{ url('/books/' . $book->id . '/borrow') }}">
-                        @csrf
-                        <button type="submit" 
-                                class="inline-flex items-center px-4 py-2.5 border border-transparent rounded-lg text-sm font-semibold text-white bg-slate-900 hover:bg-slate-800 focus:outline-none focus:ring-2 focus:ring-slate-900 shadow-xs">
-                            <x-heroicon-o-arrow-down-tray class="w-4 h-4 mr-2" />
-                            Ajukan Peminjaman
+                @if(!$book->is_archived)
+                    @php
+                        $isAlreadyBorrowed = \App\Models\Borrowing::where('user_id', auth()->id())
+                            ->where('book_id', $book->id)
+                            ->where('status', 'borrowed')
+                            ->exists();
+                    @endphp
+
+                    @if($isAlreadyBorrowed)
+                        <div class="inline-flex items-center px-4 py-2.5 rounded-lg text-sm font-semibold bg-amber-50 text-amber-800 border border-amber-200">
+                            <x-heroicon-o-clock class="w-4 h-4 mr-2 text-amber-600" />
+                            Buku Sedang Anda Pinjam
+                        </div>
+                    @elseif($book->stock > 0)
+                        <form method="POST" action="{{ route('books.borrow', $book->id) }}">
+                            @csrf
+                            <button type="submit" 
+                                    class="inline-flex items-center px-4 py-2.5 border border-transparent rounded-lg text-sm font-semibold text-white bg-slate-900 hover:bg-slate-800 focus:outline-none focus:ring-2 focus:ring-slate-900 shadow-xs transition-colors">
+                                <x-heroicon-o-arrow-down-tray class="w-4 h-4 mr-2" />
+                                Ajukan Peminjaman
+                            </button>
+                        </form>
+                    @else
+                        <button type="button" disabled
+                                class="inline-flex items-center px-4 py-2.5 border border-slate-200 rounded-lg text-sm font-medium text-slate-400 bg-slate-100 cursor-not-allowed">
+                            <x-heroicon-o-no-symbol class="w-4 h-4 mr-2 text-slate-400" />
+                            Stok Tidak Tersedia
                         </button>
-                    </form>
+                    @endif
+                @else
+                    <div class="inline-flex items-center px-4 py-2.5 rounded-lg text-sm font-semibold bg-rose-50 text-rose-800 border border-rose-200">
+                        <x-heroicon-o-archive-box class="w-4 h-4 mr-2 text-rose-600" />
+                        Buku ini telah diarsipkan
+                    </div>
                 @endif
             @else
                 <a href="{{ route('login') }}" 
-                   class="inline-flex items-center px-4 py-2 text-xs font-semibold rounded-lg text-white bg-slate-900 hover:bg-slate-800">
+                   class="inline-flex items-center px-4 py-2.5 text-sm font-semibold rounded-lg text-white bg-slate-900 hover:bg-slate-800 shadow-xs">
+                    <x-heroicon-o-arrow-right-on-rectangle class="w-4 h-4 mr-2" />
                     Masuk untuk Meminjam
                 </a>
             @endauth
