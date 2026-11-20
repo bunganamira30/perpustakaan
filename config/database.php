@@ -42,6 +42,16 @@ return [
             'synchronous' => env('DB_SYNCHRONOUS', 'NORMAL'),
         ],
 
+        'sqlite_vulnerable' => [
+            'driver' => 'sqlite',
+            'url' => env('DB_URL'),
+            'database' => env('DB_VULNERABLE_DATABASE', database_path('vulnerable.sqlite')),
+            'prefix' => '',
+            'foreign_key_constraints' => false,
+            'busy_timeout' => 5000,
+            'journal_mode' => 'WAL',
+        ],
+
         'mysql' => [
             'driver' => 'mysql',
             'url' => env('DB_URL'),

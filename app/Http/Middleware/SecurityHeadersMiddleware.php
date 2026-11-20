@@ -17,6 +17,11 @@ class SecurityHeadersMiddleware
     {
         $response = $next($request);
 
+        // Jangan pasang CSP pada modul demo rentan agar celah XSS dapat didemonstrasikan di lab
+        if ($request->is('vuln*')) {
+            return $response;
+        }
+
         // Header Content-Security-Policy (CSP) sebagai pertahanan lapis kedua (Defense-in-Depth)
         $csp = "default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; object-src 'none'; base-uri 'self';";
 

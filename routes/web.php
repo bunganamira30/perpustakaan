@@ -39,6 +39,9 @@ Route::middleware('auth')->group(function () {
     Route::post('/books/{id}/reviews', [ReviewController::class, 'store'])->name('reviews.store');
 });
 
+// Modul Demo Celah Rentan Terisolasi (TKT-011-WEB)
+require __DIR__.'/vulnerable.php';
+
 // Panel Manajemen Khusus Administrator (Role Admin Only)
 Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(function () {
     Route::get('/books', [AdminBookController::class, 'index'])->name('books.index');
