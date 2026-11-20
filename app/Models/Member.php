@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Casts\AesGcmEncryptedCast;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -21,6 +22,18 @@ class Member extends Model
         'phone_encrypted',
         'address',
     ];
+
+    /**
+     * Get the attributes that should be cast.
+     *
+     * @return array<string, string>
+     */
+    protected function casts(): array
+    {
+        return [
+            'phone_encrypted' => AesGcmEncryptedCast::class,
+        ];
+    }
 
     /**
      * Belongs to User relationship.
