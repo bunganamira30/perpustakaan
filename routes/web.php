@@ -5,6 +5,7 @@ use App\Http\Controllers\Admin\AdminMemberController;
 use App\Http\Controllers\Auth\AuthController;
 use App\Http\Controllers\BookController;
 use App\Http\Controllers\BorrowingController;
+use App\Http\Controllers\ReviewController;
 use Illuminate\Support\Facades\Route;
 
 // Beranda: Arahkan ke katalog buku
@@ -33,6 +34,9 @@ Route::middleware('auth')->group(function () {
     Route::get('/borrowings/{id}', [BorrowingController::class, 'show'])->name('borrowings.show');
     Route::post('/books/{id}/borrow', [BorrowingController::class, 'borrow'])->name('books.borrow');
     Route::post('/borrowings/{id}/return', [BorrowingController::class, 'returnBook'])->name('borrowings.return');
+
+    // Fitur Ulasan Buku Teks Bebas (FR-009, SEC-09 Safe)
+    Route::post('/books/{id}/reviews', [ReviewController::class, 'store'])->name('reviews.store');
 });
 
 // Panel Manajemen Khusus Administrator (Role Admin Only)

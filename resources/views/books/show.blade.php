@@ -106,6 +106,60 @@
             </h2>
         </div>
 
+        <!-- Form Kirim Ulasan Buku Baru (FR-009) -->
+        @auth
+            <div class="mb-8 p-5 bg-slate-50 rounded-xl border border-slate-200">
+                <h3 class="text-sm font-bold text-slate-900 mb-3 flex items-center">
+                    <x-heroicon-o-pencil-square class="w-4 h-4 mr-1.5 text-slate-700" />
+                    Tulis Ulasan Buku
+                </h3>
+                <form method="POST" action="{{ route('reviews.store', $book->id) }}" class="space-y-4">
+                    @csrf
+                    <div>
+                        <label class="block text-xs font-medium text-slate-700 mb-1.5">Penilaian / Rating Bintang:</label>
+                        <div class="flex items-center space-x-4">
+                            @for($i = 5; $i >= 1; $i--)
+                                <label class="inline-flex items-center cursor-pointer">
+                                    <input type="radio" name="rating" value="{{ $i }}" {{ old('rating', 5) == $i ? 'checked' : '' }}
+                                           class="w-4 h-4 text-slate-900 focus:ring-slate-900 border-slate-300">
+                                    <span class="ml-1 text-xs font-semibold text-slate-700">{{ $i }} ★</span>
+                                </label>
+                            @endfor
+                        </div>
+                        @error('rating')
+                            <p class="text-xs text-red-600 mt-1">{{ $message }}</p>
+                        @enderror
+                    </div>
+
+                    <div>
+                        <label for="comment" class="block text-xs font-medium text-slate-700 mb-1.5">Komentar / Ulasan Pembaca (Kolom Teks Bebas):</label>
+                        <textarea id="comment" name="comment" rows="3" required
+                                  placeholder="Tulis ulasan Anda mengenai buku ini..."
+                                  class="w-full px-3 py-2 text-sm border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-slate-900 focus:border-transparent">{{ old('comment') }}</textarea>
+                        @error('comment')
+                            <p class="text-xs text-red-600 mt-1">{{ $message }}</p>
+                        @enderror
+                    </div>
+
+                    <div class="flex items-center justify-between">
+                        <span class="text-[11px] text-slate-500 flex items-center">
+                            <x-heroicon-o-shield-check class="w-3.5 h-3.5 mr-1 text-emerald-600" />
+                            SEC-09 Safe: Dilindungi Contextual HTML Escaping & CSP
+                        </span>
+                        <button type="submit" 
+                                class="inline-flex items-center px-4 py-2 rounded-lg text-xs font-semibold text-white bg-slate-900 hover:bg-slate-800 shadow-xs focus:outline-none focus:ring-2 focus:ring-slate-900 transition-colors">
+                            <x-heroicon-o-paper-airplane class="w-3.5 h-3.5 mr-1.5" />
+                            Kirim Ulasan
+                        </button>
+                    </div>
+                </form>
+            </div>
+        @else
+            <div class="mb-6 p-4 bg-slate-50 rounded-lg border border-slate-200 text-center text-xs text-slate-600">
+                <a href="{{ route('login') }}" class="font-semibold text-slate-900 hover:underline">Masuk ke akun Anda</a> untuk memberikan ulasan dan rating pada buku ini.
+            </div>
+        @endauth
+
         @if($book->reviews->count() > 0)
             <div class="space-y-4">
                 @foreach($book->reviews as $review)
