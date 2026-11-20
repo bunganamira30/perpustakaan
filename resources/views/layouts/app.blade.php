@@ -42,9 +42,14 @@
 
                             @if(auth()->user()->isAdmin())
                                 <a href="{{ url('/admin/books') }}" 
-                                   class="inline-flex items-center px-3 py-2 rounded-md text-sm font-medium {{ request()->is('admin*') ? 'bg-slate-900 text-white' : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100' }}">
-                                    <x-heroicon-o-shield-check class="w-4 h-4 mr-1.5" />
+                                   class="inline-flex items-center px-3 py-2 rounded-md text-sm font-medium {{ request()->is('admin/books*') ? 'bg-slate-900 text-white' : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100' }}">
+                                    <x-heroicon-o-book-open class="w-4 h-4 mr-1.5" />
                                     Kelola Buku (Admin)
+                                </a>
+                                <a href="{{ url('/admin/members') }}" 
+                                   class="inline-flex items-center px-3 py-2 rounded-md text-sm font-medium {{ request()->is('admin/members*') ? 'bg-slate-900 text-white' : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100' }}">
+                                    <x-heroicon-o-users class="w-4 h-4 mr-1.5" />
+                                    Kelola Anggota (Admin)
                                 </a>
                             @endif
                         @endauth

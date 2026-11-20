@@ -130,4 +130,17 @@ class BorrowingController extends Controller
         // Request duplikat (idempoten): status sudah returned, tidak ada error dan stok tidak ditambah dua kali
         return back()->with('info', 'Buku ini sudah berstatus dikembalikan sebelumnya (operasi idempoten).');
     }
+
+    /**
+     * Display the specified borrowing detail (Anti-IDOR protected by BorrowingPolicy SEC-10 Safe).
+     */
+    public function show($id): View
+    {
+        $borrowing = Borrowing::with(['book', 'user.member'])->findOrFail($id);
+
+        // SEC-10 Safe: Penegakan otorisasi di sisi server (Server-Side Authorization)
+        Gate::authorize('view', $borrowing);
+
+        return view('borrowings.show', compact('borrowing'));
+    }
 }

@@ -22,6 +22,41 @@
         </div>
     </div>
 
+    <!-- Profil Anggota & Dekripsi Telepon Sensitif Terotorisasi (FR-011) -->
+    <div class="bg-white rounded-xl border border-slate-200 p-5 shadow-xs">
+        <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+            <div class="flex items-center space-x-3.5">
+                <div class="w-12 h-12 rounded-full bg-slate-900 text-white flex items-center justify-center font-bold text-base shadow-xs">
+                    {{ strtoupper(substr(auth()->user()->name, 0, 2)) }}
+                </div>
+                <div>
+                    <div class="flex items-center space-x-2">
+                        <h2 class="text-base font-bold text-slate-900">{{ auth()->user()->member?->full_name ?? auth()->user()->name }}</h2>
+                        <span class="text-xs uppercase px-2 py-0.5 rounded font-semibold bg-emerald-50 text-emerald-700 border border-emerald-200">
+                            {{ auth()->user()->role }}
+                        </span>
+                    </div>
+                    <p class="text-xs text-slate-500 font-mono mt-0.5">{{ auth()->user()->email }} • @<span>{{ auth()->user()->username }}</span></p>
+                </div>
+            </div>
+            <div class="flex flex-wrap items-center gap-4 text-xs bg-slate-50 p-3 rounded-lg border border-slate-200">
+                <div>
+                    <span class="text-slate-500 block">Nomor Telepon (Dekripsi AEAD):</span>
+                    <span class="font-mono font-semibold text-slate-900 flex items-center mt-0.5">
+                        <x-heroicon-o-lock-open class="w-3.5 h-3.5 mr-1 text-emerald-600" />
+                        {{ auth()->user()->member?->phone_encrypted ?? 'Tidak terdaftar' }}
+                    </span>
+                </div>
+                <div class="border-l border-slate-200 pl-4">
+                    <span class="text-slate-500 block">Alamat Terdaftar:</span>
+                    <span class="font-medium text-slate-800 mt-0.5 block truncate max-w-[200px]">
+                        {{ auth()->user()->member?->address ?? '-' }}
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <!-- Bagian 1: Pinjaman Aktif (Maksimal 3 Buku - BR-01) -->
     <div>
         <div class="flex items-center justify-between mb-4">
@@ -100,14 +135,21 @@
                                         <x-status-badge status="borrowed" label="Sedang Dipinjam" />
                                     </td>
                                     <td class="px-6 py-4 text-right">
-                                        <form method="POST" action="{{ route('borrowings.return', $borrowing->id) }}" onsubmit="return confirm('Apakah Anda yakin ingin mengembalikan buku ini?');">
-                                            @csrf
-                                            <button type="submit" 
-                                                    class="inline-flex items-center px-3.5 py-1.5 rounded-lg text-xs font-semibold text-white bg-slate-900 hover:bg-slate-800 shadow-xs focus:outline-none focus:ring-2 focus:ring-slate-900 transition-colors">
-                                                <x-heroicon-o-arrow-up-tray class="w-3.5 h-3.5 mr-1.5" />
-                                                Kembalikan Buku
-                                            </button>
-                                        </form>
+                                        <div class="inline-flex items-center space-x-2">
+                                            <a href="{{ route('borrowings.show', $borrowing->id) }}" 
+                                               class="inline-flex items-center px-3 py-1.5 rounded-lg text-xs font-medium text-slate-700 bg-white border border-slate-300 hover:bg-slate-50 shadow-xs">
+                                                <x-heroicon-o-document-magnifying-glass class="w-3.5 h-3.5 mr-1 text-slate-500" />
+                                                Detail
+                                            </a>
+                                            <form method="POST" action="{{ route('borrowings.return', $borrowing->id) }}" onsubmit="return confirm('Apakah Anda yakin ingin mengembalikan buku ini?');">
+                                                @csrf
+                                                <button type="submit" 
+                                                        class="inline-flex items-center px-3.5 py-1.5 rounded-lg text-xs font-semibold text-white bg-slate-900 hover:bg-slate-800 shadow-xs focus:outline-none focus:ring-2 focus:ring-slate-900 transition-colors">
+                                                    <x-heroicon-o-arrow-up-tray class="w-3.5 h-3.5 mr-1.5" />
+                                                    Kembalikan
+                                                </button>
+                                            </form>
+                                        </div>
                                     </td>
                                 </tr>
                             @endforeach
@@ -162,11 +204,18 @@
                                         <x-status-badge status="returned" label="Dikembalikan" />
                                     </td>
                                     <td class="px-6 py-4 text-right">
-                                        <a href="{{ route('books.show', $history->book_id) }}" 
-                                           class="inline-flex items-center px-3 py-1.5 rounded-lg text-xs font-medium text-slate-700 bg-white border border-slate-300 hover:bg-slate-50">
-                                            <x-heroicon-o-chat-bubble-left-ellipsis class="w-3.5 h-3.5 mr-1 text-slate-500" />
-                                            Beri Ulasan
-                                        </a>
+                                        <div class="inline-flex items-center space-x-2">
+                                            <a href="{{ route('borrowings.show', $history->id) }}" 
+                                               class="inline-flex items-center px-3 py-1.5 rounded-lg text-xs font-medium text-slate-700 bg-white border border-slate-300 hover:bg-slate-50 shadow-xs">
+                                                <x-heroicon-o-document-magnifying-glass class="w-3.5 h-3.5 mr-1 text-slate-500" />
+                                                Detail
+                                            </a>
+                                            <a href="{{ route('books.show', $history->book_id) }}" 
+                                               class="inline-flex items-center px-3 py-1.5 rounded-lg text-xs font-medium text-slate-700 bg-white border border-slate-300 hover:bg-slate-50">
+                                                <x-heroicon-o-chat-bubble-left-ellipsis class="w-3.5 h-3.5 mr-1 text-slate-500" />
+                                                Beri Ulasan
+                                            </a>
+                                        </div>
                                     </td>
                                 </tr>
                             @endforeach

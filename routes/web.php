@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Admin\AdminBookController;
+use App\Http\Controllers\Admin\AdminMemberController;
 use App\Http\Controllers\Auth\AuthController;
 use App\Http\Controllers\BookController;
 use App\Http\Controllers\BorrowingController;
@@ -27,8 +28,9 @@ Route::middleware('guest')->group(function () {
 Route::middleware('auth')->group(function () {
     Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
-    // Sirkulasi Peminjaman & Pengembalian Buku (TKT-008-WEB)
+    // Sirkulasi Peminjaman & Pengembalian Buku (TKT-008-WEB & TKT-009-WEB)
     Route::get('/my-borrowings', [BorrowingController::class, 'myBorrowings'])->name('my-borrowings');
+    Route::get('/borrowings/{id}', [BorrowingController::class, 'show'])->name('borrowings.show');
     Route::post('/books/{id}/borrow', [BorrowingController::class, 'borrow'])->name('books.borrow');
     Route::post('/borrowings/{id}/return', [BorrowingController::class, 'returnBook'])->name('borrowings.return');
 });
@@ -41,4 +43,7 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
     Route::get('/books/{id}/edit', [AdminBookController::class, 'edit'])->name('books.edit');
     Route::put('/books/{id}', [AdminBookController::class, 'update'])->name('books.update');
     Route::delete('/books/{id}', [AdminBookController::class, 'archive'])->name('books.archive');
+
+    // Manajemen Anggota & Dekripsi Telepon Terotorisasi (FR-010, FR-011)
+    Route::get('/members', [AdminMemberController::class, 'index'])->name('members.index');
 });
